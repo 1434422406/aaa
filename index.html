@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vuex/3.0.1/vuex.min.js"></script>
+</head>
+<body>
+    <div class="box">
+        <p>num:{{getnum}}</p>
+        <child></child>
+        <child1></child1>
+        <button @click='add'>+</button>   
+        <button @click='reduct'>-</button>   
+        <input type="text" v-model='sum'>
+        <button @click='add_num'>添加数据</button>
+        <p>{{get}}</p>
+    </div>
+</body>
+<script>
+    var store = new Vuex.Store({
+        state:{
+            num:1,
+            arr:[12,24,3,2,45,32]
+        },
+        mutations:{
+            ad(state,val){
+                state.num+=val;
+            },
+            re(state,val){
+                state.num-=val;
+            },
+            add_num1(state,val){
+                state.arr.push(Number(val))
+            }
+        },
+        getters:{
+            add_num(state){
+                var arr=[];
+                for(let i=0;i<state.arr.length;i++){
+                    if(state.arr[i]>=10){
+                        arr.push(state.arr[i])
+                    }
+                }
+                return arr;
+            }
+        }
+    })
+    new Vue({
+        el:'.box',
+        data:{
+            sum:0
+        },
+        methods:{
+            add(){
+                return this.$store.commit('ad',2)
+            },
+            reduct(){
+                return this.$store.commit('re',2)
+            },
+            add_num(){
+                this.$store.commit('add_num1',this.sum)
+            }
+        },
+        computed:{
+            getnum(){
+                return this.$store.state.num
+            },
+            get(){
+                return this.$store.getters.add_num;
+            }
+        },
+        store,
+        components:{
+            child:{
+                template:'<div>child的组件：{{getnum_child}}</div>',
+                computed:{
+                    getnum_child(){
+                        return this.$store.state.num;
+                    }
+                }
+            },
+            child1:{
+                template:'<div>child1的组件：{{getnum_child}}</div>',
+                computed:{
+                    getnum_child(){
+                        return this.$store.state.num;
+                    }
+                }
+            }
+        }
+    })
+</script>
+</html>
